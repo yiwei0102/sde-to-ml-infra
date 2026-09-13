@@ -1,5 +1,8 @@
 import numpy as np
 import pandas as pd
+from pathlib import Path
+
+import joblib
 
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
@@ -101,6 +104,12 @@ def main():
     )
 
     logistic_model.fit(X_train, y_train)
+    # save training results
+    model_dir = Path(__file__).parent / "models"
+    model_dir.mkdir(exist_ok=True)
+    model_path = model_dir / "logistic_regression.joblib"
+    joblib.dump(logistic_model, model_path)
+    print(f"\nSaved model to: {model_path}")
 
     evaluate_model(
         "Logistic Regression",
