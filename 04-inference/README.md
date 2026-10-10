@@ -41,3 +41,33 @@ Measure how KV caching affects autoregressive decoding latency as prompt length 
 ## Next Steps
 
 Investigate how batching, concurrency, and KV-cache memory consumption affect inference throughput and latency.
+
+## Serving System Design Notes
+
+### Architecture
+
+A production LLM inference service consists of an API layer, request routing, scheduling, model execution, KV-cache management, and observability.
+
+### Key Design Decisions
+
+**Continuous batching:** Schedule requests at iteration boundaries instead of keeping fixed batches until all requests finish.
+
+**Memory-aware admission:** Admit requests based on available KV-cache capacity and expected resource requirements, rather than batch size alone.
+
+**Prefill/decode scheduling:** Balance prompt processing with ongoing decode workloads to protect both TTFT and TPOT.
+
+**Backpressure:** Queue, reject, or route requests when serving capacity is exhausted.
+
+**Observability:** Monitor TTFT, TPOT, queue wait, tokens/sec/GPU, GPU memory usage, and KV-cache utilization.
+
+### Capacity Planning
+
+Concurrency alone does not determine required GPU capacity. Sizing requires model specifications, request length distributions, arrival rates, latency SLOs, hardware benchmarks, and operational headroom.
+
+### Lessons from Week 4
+
+- KV caching reduces redundant computation but consumes memory.
+- Batching can significantly improve aggregate throughput.
+- Higher throughput does not automatically mean lower per-request latency.
+- Scheduling and memory management are central to production LLM serving.
+- Benchmark results must be interpreted in the context of model size, hardware, and workload.
