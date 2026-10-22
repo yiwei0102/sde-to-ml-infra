@@ -6,7 +6,7 @@ Last updated: 2026-10-21 (America/Los_Angeles).
 
 ## Current milestone
 
-Task 1: application foundation and polished fixture dashboard completed. Stop here for user review. Tasks 2–6 are not authorized or started.
+Tasks 1 and 2 are complete. User approved Task 2 source retrieval and normalization; verification is recorded below. Stop for review before Tasks 3–6, which are not authorized or started.
 
 ## Implemented
 
@@ -34,16 +34,16 @@ Relocation validation: local Markdown links checked across eight files, old nest
 ## Known limits and open decisions
 
 - Fixture search is simple case-insensitive keyword matching over three historical papers, not semantic search or current research coverage.
-- No live retrieval, automated citation/support verification, LLM synthesis, report export or persistence exists.
+- Public-source retrieval exists behind a separate endpoint; the UI remains fixture-only. No automated citation/support verification, LLM synthesis, report export or persistence exists.
 - Requested model ID remains unverified for API availability and required capabilities. Confirm official API documentation, account access and spending limit before live integration.
 - Browser coverage is Chromium desktop/mobile emulation; Safari/Firefox have not been tested.
 - Public hosting, access and spending controls remain undecided.
 
 ## Next steps — require review
 
-1. Review Task 1 UI, documentation and fixture behavior.
-2. If approved, begin Task 2: source discovery/retrieval, date normalization and deduplication, with deterministic failure-path tests.
-3. Later tasks: structured synthesis, evidence enforcement, live UI integration and demo hardening. Obtain provider/model/budget approval before paid calls.
+1. Review Task 2 source contract, coverage limitations, provider failures and tests.
+2. Only after approval, begin Task 3 structured synthesis; verify provider/model compatibility and spending limits before paid calls.
+3. Later tasks: evidence enforcement, live UI integration and demo hardening.
 
 ## Task 1 changed-file inventory
 
@@ -53,3 +53,20 @@ Context paths below are repository-root-relative. App, check, and configuration 
 - App: `src/app/{layout.tsx,page.tsx,globals.css,icon.svg}`, `src/components/radar-dashboard.tsx`, `src/components/ui/{button.tsx,input.tsx,badge.tsx}`, `src/lib/{research.ts,utils.ts}`.
 - Checks: `tests/research.test.ts`, `e2e/research.spec.ts`, `vitest.config.mts`, `playwright.config.ts`.
 - Configuration: `.env.example`, `.gitignore`, `package.json`, `package-lock.json`, `components.json`, `eslint.config.mjs`, `next.config.ts`, `postcss.config.mjs`, `tsconfig.json`.
+
+## Task 2 implementation
+
+- Added `06-ai-frontier-radar/src/lib/sources/normalize.ts` and `retrieve.ts`, plus `src/app/api/sources/route.ts` (last path relative to the application root).
+- Public arXiv/OpenAI feeds, normalized evidence/provenance, separate publication/revision/retrieval dates, stable IDs, deduplication, inclusive filtering, bounded output and counted omissions.
+- Fixed upstream URLs, redirect rejection, timeout/body limits, process-local arXiv cooldown, partial-failure reporting and invalid-input responses. No credentials, paid services or synthesis.
+- Deterministic processing/retrieval/route tests use synthetic XML and mocked network responses; no fabricated test records are presented as real research.
+- Live module smoke: both providers returned `ok`; observed a large RSS feed, prompting an explicit ten-result-per-provider output cap. Actual publication and canonical URL metadata were returned; full articles were not downloaded.
+- Task 1 commits `9268d06` and `45c6d29` were pushed successfully to `origin/codex/frontier-radar-task-1` after the user confirmed the exact repository destination.
+
+### Task 2 verification
+
+- Lint, typecheck, production webpack build and all 25 unit/route tests passed. Both desktop/mobile Playwright regression tests passed; dashboard fixture behavior is unchanged.
+- Real production HTTP smoke: invalid date request returned 400; public-source query returned 200 with `Cache-Control: no-store`, both providers `ok`, ten arXiv records and ten OpenAI records. Result-limit omissions were counted. No paid APIs were called.
+- Important coverage: provenance/version normalization, separate date fields, invalid/missing dates, inclusive boundaries, topic matching, duplicate versions/tracking links, output limits, malformed/unsafe XML, off-domain links, upstream errors/timeouts, cooldown, streamed byte limits, request validation and partial/total failure status.
+- Current limits: abstract/feed evidence only; no full-text fetch or semantic relevance; ten arXiv candidates may miss other matches; current RSS is not a historical archive. Rate limiting is process-local. Public deployment remains unapproved.
+- Added dependencies/configuration: `fast-xml-parser` in application package/lockfile and the Vitest source alias for route tests. Added `tests/sources.test.ts` and `tests/sources-route.test.ts`. Root context and the application README now describe Task 2.

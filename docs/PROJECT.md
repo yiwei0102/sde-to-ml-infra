@@ -30,4 +30,4 @@ No accounts, database, saved history, background monitoring, scheduled jobs, com
 
 ## Current delivery
 
-Task 1 is a local fixture experience only. It performs no retrieval, paid API calls, or LLM generation. Review is required before Task 2.
+The dashboard remains a local fixture experience. Task 2 adds a separate public-source retrieval endpoint for arXiv and the official OpenAI RSS feed. It performs no paid API calls or LLM generation. The endpoint is not connected to the dashboard. Tasks 3–6 require review.
