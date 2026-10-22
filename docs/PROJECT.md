@@ -1,4 +1,12 @@
-# Product
+# Repository and product context
+
+## Repository scope
+
+`sde-to-ml-infra` is a portfolio and learning repository spanning ML foundations, PyTorch, transformers, inference, vLLM serving, and application projects. Numbered directories are independent projects, not services in a single deployed system. Their local READMEs remain the source for project-specific setup. This shared document set currently tracks AI Frontier Radar in detail; it does not claim the other projects were audited or completed.
+
+## Active product: AI Frontier Radar
+
+Application root: `06-ai-frontier-radar/`. Repository instructions and project memory live at the repository root.
 
 AI Frontier Radar helps developers and AI/ML infrastructure engineers turn fast-moving AI releases and research into evidence-backed engineering experiments. It is a portfolio-quality product, optimized for a polished working demo.
 

@@ -1,3 +1,25 @@
+# Coding-agent instructions: sde-to-ml-infra
+
+This repository contains independent ML learning projects and portfolio applications. Read this file, then `docs/PROJECT.md`, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md`, and `docs/PROGRESS.md` at session start. All paths in these documents are repository-root-relative unless explicitly stated otherwise. `CLAUDE.md` references this canonical file.
+
+## Repository rules
+
+- Prioritize a working, polished product. Prefer established SDKs and libraries over commodity reinvention; avoid unnecessary abstractions.
+- Work incrementally. Obtain approval before the next major task or significant scope/architecture changes. Consult `docs/PROGRESS.md` for the current authorized milestone.
+- Never add a database, authentication, background workers, or complex agent frameworks without demonstrated need and approval.
+- Never commit secrets or credentials. Keep API keys server-side in ignored environment files; examples contain placeholders only.
+- Run relevant tests, lint, typecheck, and build after meaningful implementation changes, using the affected project's tools. For documentation-only changes, validate links, paths, and diffs. Test important processing and failure paths.
+- Update `docs/DECISIONS.md` for significant decisions, `docs/ARCHITECTURE.md` for material architecture changes, and `docs/PROGRESS.md` after milestones. Scope entries to the affected project, distinguish completed/planned/unverified work, and avoid conversation logs or duplicate rules.
+- Preserve unrelated working changes. Each numbered project has its own dependencies and execution commands; do not assume a shared application or runtime.
+
+## AI Frontier Radar (`06-ai-frontier-radar/`)
+
+- Keep a single Next.js + TypeScript application in this directory. Add Python only with clear value and approval; this restriction does not apply to existing Python learning projects.
+- Preserve source provenance. Distinguish source evidence, model interpretation, proposed experiments, and unsupported claims. Never invent citations or dates.
+- Label fixtures as demo data. Do not imply retrieval, generation, or verification occurred when it did not.
+- Current authorization is Task 1 plus the requested root-document relocation. Tasks 2–6 require review. No paid API integration is authorized yet.
+- Run application commands from `06-ai-frontier-radar/`; see its README for setup and checks. Its `.env.example` is a placeholder, not a verified model integration.
+
 ### Intelligent Git Checkpointing
 
 You are responsible for proactively managing Git checkpoints during development. Do not wait for the user to remind you to commit or push.

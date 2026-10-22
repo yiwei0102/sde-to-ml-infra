@@ -1,5 +1,7 @@
 # Decisions
 
+Scope: AI Frontier Radar unless a decision explicitly concerns the whole repository. Application paths are prefixed with `06-ai-frontier-radar/`.
+
 ## 2026-10-21 — Single TypeScript application
 
 Accepted: Next.js App Router + React + TypeScript; Tailwind and selective shadcn/ui controls. A separate Python backend was considered but adds deployment and interface overhead without MVP value.
@@ -10,7 +12,7 @@ Accepted architecture: retrieve and normalize sources before generating findings
 
 ## 2026-10-21 — Fixture-only first milestone
 
-Accepted: realistic, explicitly labeled, hand-curated historical fixtures with local topic/date filtering. No paid APIs, SDK integration, or network retrieval. `.env.example` records the requested `gpt-6.1-sol` model; availability/compatibility remains unverified. Live integration requires later approval and a spending limit.
+Accepted: realistic, explicitly labeled, hand-curated historical fixtures with local topic/date filtering. No paid APIs, SDK integration, or network retrieval. `06-ai-frontier-radar/.env.example` records the requested `gpt-6.1-sol` model; availability/compatibility remains unverified. Live integration requires later approval and a spending limit.
 
 ## 2026-10-21 — Minimal operational scope
 
@@ -27,3 +29,7 @@ Use the scaffold's npm lockfile instead of introducing pnpm tooling to an empty 
 ## 2026-10-21 — Build compatibility
 
 Use Next.js's webpack path and Tailwind's standard PostCSS plugin. The generated Turbopack CSS loader failed while spawning a process that binds a local port in this environment; the webpack production build succeeds. Remove the shadcn CLI from application dependencies after generating the three needed primitives. It is not required at runtime.
+
+## 2026-10-21 — Root-level repository context
+
+User-directed: move the canonical `AGENTS.md`, `CLAUDE.md`, and `docs/` from the Frontier Radar application to the `sde-to-ml-infra` repository root; replace the previous root AGENTS.md while retaining its Git checkpoint policy. A nested document set was considered but rejected because root entry points should orient agents across the repository. Shared documents distinguish the independent learning projects from the active Next.js product. Keep application code, dependencies, environment template, tests and run commands in `06-ai-frontier-radar/`; update README links rather than maintaining duplicate context files.

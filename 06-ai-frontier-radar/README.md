@@ -30,7 +30,7 @@ Playwright starts the production server on port 3000, which must be free. It che
 
 ## Project memory
 
-Start with [AGENTS.md](AGENTS.md), then [Product](docs/PROJECT.md), [Architecture](docs/ARCHITECTURE.md), [Decisions](docs/DECISIONS.md), and [Progress](docs/PROGRESS.md). Claude Code enters through [CLAUDE.md](CLAUDE.md).
+Start with [root AGENTS.md](../AGENTS.md), then [Product](../docs/PROJECT.md), [Architecture](../docs/ARCHITECTURE.md), [Decisions](../docs/DECISIONS.md), and [Progress](../docs/PROGRESS.md). Claude Code enters through [root CLAUDE.md](../CLAUDE.md).
 
 ## Fixtures and limitations
 
