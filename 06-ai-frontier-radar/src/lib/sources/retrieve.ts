@@ -120,7 +120,7 @@ export async function retrieveSources(
     limitations: [
       "Bounded discovery: 10 arXiv candidates plus the current OpenAI RSS feed; return at most 10 records per provider and disclose omissions. No pagination or exhaustive historical coverage.",
       "Topics use literal keyword matching. Missing publication dates are excluded; revision dates do not replace publication dates.",
-      "Evidence is author-provided abstract/feed text, not fetched full text or independently verified claims. No LLM synthesis has occurred.",
+      "Evidence is author-provided abstract/feed text, not fetched full text or independently verified claims. This retrieval step does not perform LLM synthesis.",
     ],
   };
 }

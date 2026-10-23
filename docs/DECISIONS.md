@@ -41,3 +41,11 @@ User approved proceeding to Task 2. Use the public arXiv Atom API and official O
 Use fixed endpoints, bounded streams/timeouts, conservative official-link validation, publication-date filtering, stable-ID deduplication, provider-specific failure status, counted exclusions and ten returned records per provider. Unknown dates are excluded rather than inferred. A process-local arXiv cooldown suffices for the local single-process demo; coordinated deployment-wide rate limiting must precede public multi-instance hosting.
 
 References verified: [arXiv API manual](https://info.arxiv.org/help/api/user-manual.html), [arXiv API terms/rate limits](https://info.arxiv.org/help/api/tou.html), [official OpenAI RSS](https://openai.com/news/rss.xml), [XML parser](https://github.com/NaturalIntelligence/fast-xml-parser). A live smoke test returned successful statuses from both public providers. No paid API was called.
+
+## 2026-10-22 — Structured synthesis behind explicit server opt-in
+
+User approved Task 3. Use the official OpenAI SDK `responses.parse` with Zod structured output, retaining `gpt-6.1-sol`. Add `POST /api/research` to compose retrieval with one bounded generation request; keep the UI fixture-only until its approved integration task. Set `ENABLE_LLM_SYNTHESIS=false` in the environment example; no paid verification calls without budget approval. Mock the HTTP transport beneath the real SDK so tests exercise its parser and emitted request schema without credentials or spending.
+
+Keep canonical sources in server-owned retrieval records. Model output contains source IDs and explicitly separated claims/interpretations/proposals; no URL/date fields. Validate reference integrity now; do not claim semantic evidence validation before Task 4. Preserve sources on model failure, reject malformed/refused/incomplete output, disable retries and report input clipping. Avoid a provider framework or a new persistence layer.
+
+Verified official documentation: [structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses), [GPT-6.1 Sol model](https://developers.openai.com/api/docs/models/gpt-6.1-sol), [SDK documentation](https://developers.openai.com/api/docs/libraries). Documentation support does not establish account-specific access or live quality.

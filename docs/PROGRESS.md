@@ -2,11 +2,11 @@
 
 Scope: AI Frontier Radar (`06-ai-frontier-radar/`) and its repository-level context. Other numbered projects are not assessed here.
 
-Last updated: 2026-10-21 (America/Los_Angeles).
+Last updated: 2026-10-22 (America/Los_Angeles).
 
 ## Current milestone
 
-Tasks 1 and 2 are complete. User approved Task 2 source retrieval and normalization; verification is recorded below. Stop for review before Tasks 3–6, which are not authorized or started.
+Tasks 1–3 are complete. Task 3 structured synthesis was verified with mocked model responses and a real disabled-endpoint check; no paid calls were made. Stop for review before Tasks 4–6, which are not authorized or started.
 
 ## Implemented
 
@@ -14,7 +14,7 @@ Tasks 1 and 2 are complete. User approved Task 2 source retrieval and normalizat
 - Responsive research page, native date inputs, topic/date validation, inclusive local keyword filtering, category filters, empty state and reset.
 - Three hand-curated historical fixtures with version-specific arXiv links and first-publication dates. Demo labels, expandable source paraphrases/limitations, editorial interpretations, and unexecuted experiment proposals.
 - Zod query/fixture contracts; Vitest processing tests and desktop/mobile Playwright coverage.
-- Placeholder-only `06-ai-frontier-radar/.env.example`: requested `OPENAI_MODEL=gpt-6.1-sol` and API key placeholder. No API integration or real credentials.
+- Placeholder-only `06-ai-frontier-radar/.env.example`: requested `OPENAI_MODEL=gpt-6.1-sol` and API key placeholder. No real credentials. The Task 3 SDK integration is described below.
 - Canonical AGENTS.md, Claude entry point, product/architecture/decision/progress documents, and local setup README.
 
 ## Root-context relocation completed
@@ -34,16 +34,16 @@ Relocation validation: local Markdown links checked across eight files, old nest
 ## Known limits and open decisions
 
 - Fixture search is simple case-insensitive keyword matching over three historical papers, not semantic search or current research coverage.
-- Public-source retrieval exists behind a separate endpoint; the UI remains fixture-only. No automated citation/support verification, LLM synthesis, report export or persistence exists.
-- Requested model ID remains unverified for API availability and required capabilities. Confirm official API documentation, account access and spending limit before live integration.
+- Public-source retrieval exists behind a separate endpoint; the UI remains fixture-only. Reference-ID validation and structured synthesis are implemented in the opt-in backend. Semantic claim-support verification, report export and persistence remain unimplemented.
+- Official model docs confirm the requested model supports structured outputs/Responses. Account access, billing, latency and generation quality remain unverified; paid smoke testing requires budget approval.
 - Browser coverage is Chromium desktop/mobile emulation; Safari/Firefox have not been tested.
 - Public hosting, access and spending controls remain undecided.
 
 ## Next steps — require review
 
-1. Review Task 2 source contract, coverage limitations, provider failures and tests.
-2. Only after approval, begin Task 3 structured synthesis; verify provider/model compatibility and spending limits before paid calls.
-3. Later tasks: evidence enforcement, live UI integration and demo hardening.
+1. Review Task 3 using `docs/CODE_REVIEW.md` and the milestone diff against baseline `21387ce`.
+2. Only after approval, begin Task 4 semantic evidence enforcement.
+3. Later tasks: live UI integration and demo hardening. Confirm account access and spending limits before paid testing.
 
 ## Task 1 changed-file inventory
 
@@ -70,3 +70,12 @@ Context paths below are repository-root-relative. App, check, and configuration 
 - Important coverage: provenance/version normalization, separate date fields, invalid/missing dates, inclusive boundaries, topic matching, duplicate versions/tracking links, output limits, malformed/unsafe XML, off-domain links, upstream errors/timeouts, cooldown, streamed byte limits, request validation and partial/total failure status.
 - Current limits: abstract/feed evidence only; no full-text fetch or semantic relevance; ten arXiv candidates may miss other matches; current RSS is not a historical archive. Rate limiting is process-local. Public deployment remains unapproved.
 - Added dependencies/configuration: `fast-xml-parser` in application package/lockfile and the Vitest source alias for route tests. Added `tests/sources.test.ts` and `tests/sources-route.test.ts`. Root context and the application README now describe Task 2.
+
+## Task 3 implementation and verification
+
+- Added application modules `src/lib/synthesis/{schema,synthesize}.ts`, `src/lib/research-run.ts` and `src/app/api/research/route.ts`. Added official `openai` SDK and `server-only` guard; no credentials committed.
+- Added three test files for SDK parsing/request configuration, orchestration and route behavior. Source retrieval's limitation text now scopes its no-synthesis statement to that stage.
+- Strict structured findings, bounded evidence input, source-ID integrity, honest unverified/unsupported claim labels, experiment/interpretation labels, model/prompt/schema/usage metadata and retained source results on failure.
+- No database/auth/workers/framework. Dashboard unchanged and still demo-only. Paid smoke question is pending; no paid calls have been made. Account compatibility and live research quality remain unverified.
+- Lint, typecheck, production build and 41 tests passed. Both desktop/mobile browser regressions passed. A real production HTTP request with synthesis explicitly disabled returned 503, `Cache-Control: no-store`, and `error.code=disabled`. The production dependency audit reported zero advisories; the known five lint-tooling advisory entries remain development-only. No live model output or paid verification is claimed.
+- Added `docs/CODE_REVIEW.md`: full-stack explanation, implemented vs planned data flow, Task 3 core map and review exercises. Baseline commit: `21387ce`.
