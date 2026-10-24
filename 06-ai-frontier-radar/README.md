@@ -36,7 +36,7 @@ Start with [root AGENTS.md](../AGENTS.md), then [Product](../docs/PROJECT.md), [
 
 Three manually curated historical papers: [Llama 2](https://arxiv.org/abs/2307.09288v1), [GPT-4 technical report](https://arxiv.org/abs/2303.08774v1), and [ReAct](https://arxiv.org/abs/2210.03629v1). Dates reflect first publication; links pin the original versions. Summaries are paraphrases. Significance is editorial interpretation; experiments are unexecuted proposals. No automated citation verification is implemented. Keyword matching is deliberately simple and coverage is limited to these fixtures.
 
-Tasks 4–6 require review before implementation. Live retrieval and synthesis must preserve source provenance and distinguish evidence from interpretation.
+Tasks 5–6 require review before implementation. Live retrieval and synthesis must preserve source provenance and distinguish evidence from interpretation.
 
 
 ## Public-source endpoint (Task 2)
@@ -60,6 +60,13 @@ Coverage is bounded to ten arXiv candidates and the current official feed, with 
 
 The configured example remains `gpt-6.1-sol`. Its official documentation lists structured-output support; account-specific access remains untested. The endpoint accepts at most 4096 request bytes, bounds source excerpts/output tokens, disables automatic retries, and retains sources if the model fails. These limits are not a dollar budget guarantee. Do not expose it publicly before reviewing access/spending controls.
 
-Findings reference server-owned source IDs. Claimed support is **unverified**, or **unsupported** for empty references; interpretations and unexecuted experiments are labeled separately. Task 4 semantic validation and Task 5 live UI integration are not implemented. The existing dashboard stays demo-only and does not call this endpoint.
+Findings reference server-owned source IDs. Task 4 accepts exact full source-sentence claims as **source-reported**, with citation metadata from retrieved records. Missing/mismatched quotes and paraphrases are withheld with unsupported reasons; findings with no accepted claims are omitted. Source attribution does not establish factual truth or general entailment. Interpretations and unexecuted experiments remain unverified and labeled separately. Task 5 live UI integration is not implemented. The existing dashboard stays demo-only and does not call this endpoint.
 
 See [the code-review and data-flow guide](../docs/CODE_REVIEW.md) for a core-file map, diagrams and a step-by-step review exercise. Task 3 baseline commit: `21387ce`.
+
+
+## Evidence policy (Task 4)
+
+Prompt/schema `research-v2` requires claim evidence as `{ sourceId, quote }`. Policy `extractive-v1` checks a complete original sentence (at least 20 characters), exact claim/quote equality after whitespace/Unicode normalization, and membership in the evidence actually supplied to the model. It preserves case, numbers, punctuation and negation. Every cited source needs exactly one matching quote. Input clipping/omissions remain disclosed; model-authored citation links are rejected by recognized URL/DOI/Markdown patterns.
+
+Inspect `synthesis.evidenceValidation` for accepted counts, withheld claims/findings and reasons. A generated report can contain zero accepted findings. Citation context helps human review; no independent fact-checking or general semantic entailment is claimed. English sentence segmentation and a conservative extractive policy intentionally reduce recall. The UI remains fixture-only, synthesis defaults off, and model verification remains mocked only. See the Task 4 section of [the review guide](../docs/CODE_REVIEW.md).

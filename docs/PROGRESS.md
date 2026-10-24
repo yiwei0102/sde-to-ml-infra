@@ -2,11 +2,11 @@
 
 Scope: AI Frontier Radar (`06-ai-frontier-radar/`) and its repository-level context. Other numbered projects are not assessed here.
 
-Last updated: 2026-10-22 (America/Los_Angeles).
+Last updated: 2026-10-24 (America/Los_Angeles).
 
 ## Current milestone
 
-Tasks 1–3 are complete. Task 3 structured synthesis was verified with mocked model responses and a real disabled-endpoint check; no paid calls were made. Stop for review before Tasks 4–6, which are not authorized or started.
+Tasks 1–4 are complete. Task 4 uses conservative extractive source attribution, not general semantic entailment or independent fact checking. Stop for review before Tasks 5–6. No paid model calls are authorized or made.
 
 ## Implemented
 
@@ -34,16 +34,16 @@ Relocation validation: local Markdown links checked across eight files, old nest
 ## Known limits and open decisions
 
 - Fixture search is simple case-insensitive keyword matching over three historical papers, not semantic search or current research coverage.
-- Public-source retrieval exists behind a separate endpoint; the UI remains fixture-only. Reference-ID validation and structured synthesis are implemented in the opt-in backend. Semantic claim-support verification, report export and persistence remain unimplemented.
-- Official model docs confirm the requested model supports structured outputs/Responses. Account access, billing, latency and generation quality remain unverified; paid smoke testing requires budget approval.
+- Public-source retrieval exists behind a separate endpoint; the UI remains fixture-only. Reference-ID validation and structured synthesis are implemented in the opt-in backend. Task 4 adds conservative source-sentence attribution; general paraphrase entailment, independent truth verification, report export and persistence remain unimplemented.
+- Official model docs confirm the requested model supports structured outputs/Responses. Account access, billing, latency and generation quality remain unverified; the user has required mocked model tests only, with no paid calls.
 - Browser coverage is Chromium desktop/mobile emulation; Safari/Firefox have not been tested.
 - Public hosting, access and spending controls remain undecided.
 
 ## Next steps — require review
 
-1. Review Task 3 using `docs/CODE_REVIEW.md` and the milestone diff against baseline `21387ce`.
-2. Only after approval, begin Task 4 semantic evidence enforcement.
-3. Later tasks: live UI integration and demo hardening. Confirm account access and spending limits before paid testing.
+1. Review Task 4 against baseline `6da72b0`, starting at `enforceEvidence` and its adversarial tests; see `docs/CODE_REVIEW.md`.
+2. Only after approval, begin Task 5 live UI integration, retaining a no-spend demo/test path.
+3. Task 6: demo hardening and deployment decisions. Keep model calls mocked; do not assume account access or real generation quality was verified.
 
 ## Task 1 changed-file inventory
 
@@ -76,6 +76,14 @@ Context paths below are repository-root-relative. App, check, and configuration 
 - Added application modules `src/lib/synthesis/{schema,synthesize}.ts`, `src/lib/research-run.ts` and `src/app/api/research/route.ts`. Added official `openai` SDK and `server-only` guard; no credentials committed.
 - Added three test files for SDK parsing/request configuration, orchestration and route behavior. Source retrieval's limitation text now scopes its no-synthesis statement to that stage.
 - Strict structured findings, bounded evidence input, source-ID integrity, honest unverified/unsupported claim labels, experiment/interpretation labels, model/prompt/schema/usage metadata and retained source results on failure.
-- No database/auth/workers/framework. Dashboard unchanged and still demo-only. Paid smoke question is pending; no paid calls have been made. Account compatibility and live research quality remain unverified.
+- No database/auth/workers/framework. Dashboard unchanged and still demo-only. User subsequently selected mocked tests only; no paid calls have been made. Account compatibility and live research quality remain unverified.
 - Lint, typecheck, production build and 41 tests passed. Both desktop/mobile browser regressions passed. A real production HTTP request with synthesis explicitly disabled returned 503, `Cache-Control: no-store`, and `error.code=disabled`. The production dependency audit reported zero advisories; the known five lint-tooling advisory entries remain development-only. No live model output or paid verification is claimed.
 - Added `docs/CODE_REVIEW.md`: full-stack explanation, implemented vs planned data flow, Task 3 core map and review exercises. Baseline commit: `21387ce`.
+
+## Task 4 implementation
+
+- Added application module `src/lib/synthesis/evidence.ts` and `tests/evidence.test.ts`. Updated generated schema/prompt to require per-source evidence quotes and wired the pure policy after SDK parsing. Changed only three production synthesis files; API routes and browser UI are unchanged.
+- Accepted claims must exactly reproduce a full source sentence from the actual supplied evidence. URLs/dates come from registered source records. Output distinguishes source-reported claims, unsupported/withheld diagnostics, and unverified interpretation/proposals. This does not claim arbitrary semantic entailment or factual truth.
+- Tests include real IDs with false claims, changed numbers/negation, paraphrases, invented quotes, foreign-source quotes, clipped/unsupplied evidence, missing/duplicate citations, unknown IDs, narrative citation injection, mixed valid/unsupported claims and empty output.
+- Lint, typecheck, production build and 56 unit/SDK tests passed. Model HTTP transport remains mocked. Both desktop/mobile Playwright regressions passed; the fixture UI is unchanged. No paid calls were made.
+- Review baseline: `6da72b0`; branch `codex/frontier-radar-task-4`. Tasks 5–6 remain unstarted.

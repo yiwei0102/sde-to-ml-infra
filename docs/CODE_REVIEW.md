@@ -36,7 +36,7 @@ flowchart TD
   I -->|refusal/error/incomplete| L[Failure report retains sources]
 ```
 
-`POST /api/sources` stops after retrieval/normalization and requires no model key. `POST /api/research` adds synthesis but is disabled by default. The API key stays on the server. A future approved UI integration will replace local fixture filtering with a `fetch` to the research API, then render its response. That browser-to-research connection and semantic evidence validation are **not implemented** yet.
+`POST /api/sources` stops after retrieval/normalization and requires no model key. `POST /api/research` adds synthesis but is disabled by default. The API key stays on the server. A future approved UI integration will replace local fixture filtering with a `fetch` to the research API, then render its response. That browser-to-research connection is **not implemented** yet. Task 4 now applies extractive evidence enforcement after schema parsing; it does not establish general semantic truth.
 
 ## Task 3 map: read in this order
 
@@ -58,7 +58,7 @@ Prior retrieval code is in [retrieve.ts](../06-ai-frontier-radar/src/lib/sources
 
 1. Read the outcome/scope and commit boundary. For Task 3 the baseline is `21387ce` (Task 2). Check the diff before opening the entire repository.
 2. Read the data contract, then trace a single request through route → orchestration → retrieval → SDK → response. At each boundary ask: who owns this data, what validates it, and what happens when it fails?
-3. Review trust boundaries: server-only secrets, untrusted source text, and model output. A valid JSON shape or known source ID does **not** prove the text is supported by evidence. Referenced claims remain `unverified`; empty references are `unsupported`.
+3. Review trust boundaries: server-only secrets, untrusted source text, and model output. A valid JSON shape or known source ID does **not** prove the text is supported by evidence. At the Task 3 baseline, referenced claims were `unverified`. Task 4 now accepts only quoted source sentences as `source-reported` and withholds unsupported claims; neither status establishes factual truth.
 4. Read failure tests before implementation details: disabled configuration, no matches, source failure, refusal, incomplete JSON, unknown IDs and upstream errors. Explain each expected behavior in your own words.
 5. Run checks, then make one temporary test mutation (without committing it): replace a valid source ID with `invented` and confirm output is rejected. Revert the mutation. This helps demonstrate the guarantee rather than relying on a green test count.
 6. Review docs/config/package changes last. Check whether the claimed behavior matches the code and which checks were mocked versus live.
@@ -89,4 +89,26 @@ Start `npm run dev` with `ENABLE_LLM_SYNTHESIS=false`. Post a valid topic/date J
 
 ## What to leave for later review
 
-Task 4: evaluate whether evidence supports the claims, beyond ID integrity. Task 5: connect the browser to the validated research pipeline. Task 6: deployment, access/spending controls and demo hardening. These require approval before implementation.
+Task 4 now enforces conservative extractive attribution; general paraphrase entailment remains unimplemented. Task 5: connect the browser to the validated research pipeline. Task 6: deployment, access/spending controls and demo hardening. These require approval before implementation.
+
+
+## Task 4 focused review (baseline 6da72b0)
+
+Only three production synthesis files change. Start here rather than rereading the HTTP routes:
+
+1. [schema.ts](../06-ai-frontier-radar/src/lib/synthesis/schema.ts): compare the claim shape to research-v1; it now requires an evidence array with sourceId/quote. Prompt/schema versions are research-v2.
+2. [evidence.ts](../06-ai-frontier-radar/src/lib/synthesis/evidence.ts), `enforceEvidence`: trace one accepted sentence and one false claim with a real ID. Every quote must belong to the correct source, appear in the supplied excerpt, be a whole original sentence and equal the claim. Citation URLs/dates are built from server records. Rejected claims move to unsupported diagnostics; empty findings disappear.
+3. [synthesize.ts](../06-ai-frontier-radar/src/lib/synthesis/synthesize.ts), `synthesizeSources`: the new policy runs after SDK schema parsing and before anything is returned as a finding. The same bounded single model call remains; tests mock it.
+4. [evidence.test.ts](../06-ai-frontier-radar/tests/evidence.test.ts): read the changed-number/negation and cross-source tests first. Then read clipping, missing references and mixed accepted/withheld output.
+5. [synthesis.test.ts](../06-ai-frontier-radar/tests/synthesis.test.ts): the SDK integration test confirms a fabricated claim with a real source ID is withheld, not just that a standalone helper behaves correctly.
+
+```text
+SDK JSON → strict v2 schema → enforceEvidence
+                                 ├─ exact complete source sentence → source-reported + registry citations
+                                 ├─ missing/mismatched/paraphrased evidence → unsupported diagnostics
+                                 └─ finding has no accepted claims → finding withheld
+```
+
+Review question: would the claim “accuracy is 100%” pass merely because the paper ID exists? No. What if the actual paper itself falsely says that? It can pass attribution, because this policy establishes what the source reports, not real-world truth. Qualifications outside the supplied excerpt may still be missing. Inspect citation context and the explicit limitation.
+
+From the repository root use `git diff 6da72b0 HEAD -- 06-ai-frontier-radar/src/lib/synthesis` for the production change and the same command with `06-ai-frontier-radar/tests` for tests. The current demo UI is unaffected. General paraphrase support would need separate design/evaluation and is not implied by green tests.

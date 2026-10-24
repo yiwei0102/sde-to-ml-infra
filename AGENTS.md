@@ -17,7 +17,7 @@ This repository contains independent ML learning projects and portfolio applicat
 - Keep a single Next.js + TypeScript application in this directory. Add Python only with clear value and approval; this restriction does not apply to existing Python learning projects.
 - Preserve source provenance. Distinguish source evidence, model interpretation, proposed experiments, and unsupported claims. Never invent citations or dates.
 - Label fixtures as demo data. Do not imply retrieval, generation, or verification occurred when it did not.
-- Tasks 1–3 are authorized. Stop for review before Tasks 4–6. Task 3 includes the disabled-by-default OpenAI integration; paid verification calls require an explicit budget approval. Include a baseline commit, core function links, review order, tests and tradeoffs in milestone handoffs.
+- Tasks 1–4 are authorized. Stop for review before Tasks 5–6. Keep synthesis disabled by default. User requires mocked model tests only; do not make paid calls. Include a baseline commit, core function links, review order, tests and tradeoffs in milestone handoffs.
 - Run application commands from `06-ai-frontier-radar/`; see its README for setup and checks. Its `.env.example` is a placeholder, not a verified model integration.
 
 ### Intelligent Git Checkpointing

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export const PROMPT_VERSION = "research-v1";
-export const SCHEMA_VERSION = "research-v1";
+export const PROMPT_VERSION = "research-v2";
+export const SCHEMA_VERSION = "research-v2";
 // The model supplies IDs, never canonical URLs or publication dates.
 export const synthesisSchema = z.strictObject({
   findings: z
@@ -14,6 +14,14 @@ export const synthesisSchema = z.strictObject({
             z.strictObject({
               text: z.string().min(1).max(600),
               sourceIds: z.array(z.string().min(1)).max(8),
+              evidence: z
+                .array(
+                  z.strictObject({
+                    sourceId: z.string().min(1).max(512),
+                    quote: z.string().min(1).max(600),
+                  }),
+                )
+                .max(8),
             }),
           )
           .max(5),

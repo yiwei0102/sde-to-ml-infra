@@ -73,11 +73,18 @@ it("returns a complete report after one synthesis call", async () => {
       requestedModel: "gpt-6.1-sol",
       model: "gpt-6.1-sol",
       responseId: "synthetic",
-      promptVersion: "research-v1",
-      schemaVersion: "research-v1",
+      promptVersion: "research-v2",
+      schemaVersion: "research-v2",
       usage: null,
     },
     input: { sourceIds: [], omittedSourceIds: [], truncatedSourceIds: [] },
+    evidenceValidation: {
+      policyVersion: "extractive-v1",
+      acceptedClaims: 0,
+      withheldClaims: [],
+      withheldFindings: [],
+      limitation: "Synthetic test policy.",
+    },
     limitations: [],
   });
   expect((await runResearch(query)).status).toBe("complete");
